@@ -5,21 +5,21 @@ FROM golang:1.22.5-alpine3.20
 WORKDIR /app
 
 # Copy the Go modules and build files to the working directory
-COPY go.mod ./
-COPY go.sum ./
+COPY go.mod .
+COPY go.sum .
+COPY todo.go .
 RUN go mod download
 
 # Copy the entire source code to the working directory
 COPY . .
 
 # Build the Go application and name the output executable as 'dockergin'
-RUN GOARCH=amd64 GOOS=linux go build -o app .
+RUN go build -o bin .
 
 # Ensure the 'dockergin' executable has the necessary permissions
-RUN chmod +x app
-
+RUN chmod +x bin
 # Expose the port that the application listens on
 EXPOSE 8000
 
 # Set the entry point to run the executable
-ENTRYPOINT ["./app"]
+ENTRYPOINT ["./app/bin"]
