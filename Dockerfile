@@ -7,7 +7,7 @@ WORKDIR /app
 # Copy the Go modules and build files to the working directory
 COPY go.mod .
 COPY go.sum .
-COPY todo.go .
+COPY main.go .
 RUN go mod download
 
 # Copy the entire source code to the working directory
