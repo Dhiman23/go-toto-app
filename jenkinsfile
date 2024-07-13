@@ -1,0 +1,59 @@
+pipeline{
+agent any 
+
+environment{
+    
+}
+
+stages{
+stage("git checkout "){
+  steps{
+
+  }
+}
+
+stage("go build"){
+  steps{
+
+  }
+}
+stage("go test"){
+    steps{
+
+    }
+}
+stage("Sonar"){
+    steps{
+
+    }
+}
+stage("trivy file scan"){
+    steps{
+
+    }
+}
+
+stage("docker image build "){
+    setps{
+        script{
+
+        }
+    }
+}
+stage("trivy image scan "){
+    steps{
+
+    }
+}
+
+stage("docker image push  "){
+    setps{
+        script{
+            
+        }
+    }
+}
+
+
+}
+}
