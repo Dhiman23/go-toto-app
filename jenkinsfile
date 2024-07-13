@@ -1,59 +1,87 @@
 pipeline{
 agent any 
-
+tools{
+    go 'go1.20'
+}
 environment{
-    
+     SCANNER_HOME= tool 'sonar-scanner' 
 }
 
 stages{
 stage("git checkout "){
   steps{
-
-  }
-}
-
-stage("go build"){
-  steps{
-
+     git branch: 'main', url: 'https://github.com/Dhiman23/go-toto-app.git'
   }
 }
 stage("go test"){
     steps{
-
+      script {
+                   
+                    sh 'go test ./...'
+                }
+    }
+}
+stage("trivy file scan "){
+    steps{
+        sh "trivy fs --format table -o trivy-fs-report.html ."
     }
 }
 stage("Sonar"){
     steps{
-
+      withSonarQubeEnv('sonar') {
+                         sh '''
+                         $SCANNER_HOME/bin/sonar-scanner -Dsonar.projectName=GoApp -Dsonar.projectKey=GoApp -Dsonar.java.binaries=. 
+                                    
+                        '''
+                       }
     }
 }
-stage("trivy file scan"){
+stage("build go app"){
     steps{
-
+     script {
+                    // Adjust these commands based on how you build and upload your Go application to Nexus
+                    sh 'go build -o main .'
+                    // sh 'curl -u username:password -X PUT --upload-file your-app https://nexus.example.com/repository/your-repo/your-app/1.0.0/your-app-1.0.0'
+          }
     }
 }
 
 stage("docker image build "){
-    setps{
+    steps{
         script{
-
+            withDockerRegistry(credentialsId: 'docker-cred', toolName: 'docker') {
+                        
+                        sh "docker build -t sajaldhimanitc1999/goapp:latest ."
+                        
+                      }
         }
     }
 }
 stage("trivy image scan "){
     steps{
-
+        sh "trivy image --format table -o trivy-image-report.html sajaldhimanitc1999/goapp:latest" 
     }
 }
 
 stage("docker image push  "){
-    setps{
+    steps{
         script{
-            
+               withDockerRegistry(credentialsId: 'docker-cred', toolName: 'docker') {
+                        
+                        sh "docker push sajaldhimanitc1999/goapp:latest"
+                        
+                      }
         }
     }
 }
+stage(deploy){
+     steps{
+      script{
+        sh "docker run -d -p 8000:8000 sajaldhimanitc1999/goapp:latest"
+      }
 
+     }
+}
 
 }
 }
