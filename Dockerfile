@@ -14,12 +14,12 @@ RUN go mod download
 COPY . .
 
 # Build the Go application and name the output executable as 'dockergin'
-RUN go build -o bin .
+RUN go build -o main .
 
 # Ensure the 'dockergin' executable has the necessary permissions
-RUN chmod +x bin
+RUN chmod +x main
 # Expose the port that the application listens on
 EXPOSE 8000
 
 # Set the entry point to run the executable
-ENTRYPOINT ["./app/bin"]
+ENTRYPOINT ["./main"]
