@@ -22,4 +22,4 @@ RUN chmod +x main
 EXPOSE 8000
 
 # Set the entry point to run the executable
-ENTRYPOINT ["./main"]
+ENTRYPOINT ["./app/main"]
